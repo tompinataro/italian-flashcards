@@ -1,0 +1,18 @@
+{
+  "name": "Italian Flashcards",
+  "short_name": "Italian Cards",
+  "description": "Offline Italian flashcards for phone study.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ed",
+  "theme_color": "#1f6f5b",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

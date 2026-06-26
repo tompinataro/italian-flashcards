@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1f6f5b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Italian Cards" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Italian Flashcards</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/icon.svg" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="kicker">Italian practice deck</p>
+          <h1>Flashcards</h1>
+        </div>
+        <div class="progress" aria-live="polite">
+          <span id="card-count">1 / 1</span>
+        </div>
+      </header>
+
+      <section class="toolbar" aria-label="Deck controls">
+        <label class="field">
+          <span>Deck</span>
+          <select id="deck-select"></select>
+        </label>
+        <button id="shuffle-button" type="button">Shuffle</button>
+        <button id="reset-button" type="button">Reset</button>
+      </section>
+
+      <section class="study-area" aria-label="Flashcard study area">
+        <button id="card" class="flashcard" type="button" aria-live="polite">
+          <span class="card-face card-front">
+            <span id="front-label" class="card-label">Italian</span>
+            <strong id="front-text"></strong>
+            <span id="front-note" class="card-note"></span>
+          </span>
+          <span class="card-face card-back">
+            <span id="back-label" class="card-label">English</span>
+            <strong id="back-text"></strong>
+            <span id="back-note" class="card-note"></span>
+          </span>
+        </button>
+      </section>
+
+      <nav class="nav-row" aria-label="Card navigation">
+        <button id="previous-button" type="button">Previous</button>
+        <button id="flip-button" type="button">Flip</button>
+        <button id="next-button" type="button">Next</button>
+      </nav>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
