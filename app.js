@@ -13,6 +13,7 @@ const decks = [
       { front: 'grazie mille', back: 'thanks a lot' },
       { front: 'prego', back: "you're welcome / go ahead" },
       { front: 'scusi', back: 'excuse me', note: 'Formal or polite.' },
+      { front: 'mi scusi', back: 'excuse me / sorry', note: 'More complete polite form.' },
       { front: 'mi dispiace', back: "I'm sorry" },
       { front: 'non capisco', back: "I don't understand" },
       { front: 'parla inglese?', back: 'do you speak English?' },
