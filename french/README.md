@@ -2,6 +2,8 @@
 
 A small static Progressive Web App for French flashcards. It runs without a build step and can be installed to a phone from a hosted URL.
 
+The French app includes an optional pronunciation switch that uses the browser's speech synthesis support.
+
 ## Run Locally
 
 From this folder:

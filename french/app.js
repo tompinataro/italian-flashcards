@@ -82,12 +82,16 @@ const decks = [
 
 const FAVORITES_DECK_ID = 'favorites';
 const FAVORITES_STORAGE_KEY = 'french-flashcards-favorites-v1';
+const PRONUNCIATION_VOLUME = 0.6;
+const PRONUNCIATION_RATE = 0.9;
 
 const state = {
   deckId: decks[0].id,
   order: decks[0].cards.map((_, index) => index),
   position: 0,
   flipped: false,
+  audioEnabled: false,
+  lastPronouncedCardId: '',
   favoriteIds: loadFavoriteIds(),
   touchStartX: 0,
   touchStartY: 0,
@@ -107,8 +111,13 @@ const elements = {
   flip: document.querySelector('#flip-button'),
   shuffle: document.querySelector('#shuffle-button'),
   reset: document.querySelector('#reset-button'),
-  favorite: document.querySelector('#favorite-button')
+  favorite: document.querySelector('#favorite-button'),
+  audioToggle: document.querySelector('#audio-toggle')
 };
+
+function canSpeak() {
+  return 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+}
 
 function cardId(deckId, index) {
   return `${deckId}:${index}`;
@@ -219,6 +228,37 @@ function toggleFlip() {
   render();
 }
 
+function speakCurrentCard({ force = false } = {}) {
+  const card = currentCard();
+
+  if (!state.audioEnabled || !card || !canSpeak()) return;
+  if (!force && state.lastPronouncedCardId === card.id) return;
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(card.front);
+  utterance.lang = 'fr-FR';
+  utterance.volume = PRONUNCIATION_VOLUME;
+  utterance.rate = PRONUNCIATION_RATE;
+  utterance.pitch = 1;
+
+  state.lastPronouncedCardId = card.id;
+  window.speechSynthesis.speak(utterance);
+}
+
+function toggleAudio() {
+  if (!canSpeak()) return;
+
+  state.audioEnabled = !state.audioEnabled;
+
+  if (!state.audioEnabled) {
+    state.lastPronouncedCardId = '';
+    window.speechSynthesis.cancel();
+  }
+
+  render();
+}
+
 function refreshDeckSelect() {
   const selectedDeckId = state.deckId;
 
@@ -296,6 +336,10 @@ function render() {
   elements.favorite.disabled = isEmpty;
   elements.favorite.setAttribute('aria-pressed', String(isFavorite));
   elements.favorite.setAttribute('aria-label', isFavorite ? 'Remove current card from favorites' : 'Add current card to favorites');
+  elements.audioToggle.classList.toggle('is-on', state.audioEnabled);
+  elements.audioToggle.disabled = isEmpty || !canSpeak();
+  elements.audioToggle.setAttribute('aria-checked', String(state.audioEnabled));
+  elements.audioToggle.setAttribute('aria-label', state.audioEnabled ? 'Turn pronunciation off' : 'Turn pronunciation on');
   elements.card.classList.toggle('is-flipped', state.flipped);
   elements.card.setAttribute(
     'aria-label',
@@ -305,6 +349,8 @@ function render() {
         ? `${card.back}. Tap to show French.`
         : `${card.front}. Tap to show English.`
   );
+
+  speakCurrentCard();
 }
 
 function boot() {
@@ -327,6 +373,7 @@ function boot() {
   elements.shuffle.addEventListener('click', shuffle);
   elements.reset.addEventListener('click', () => setDeck(state.deckId));
   elements.favorite.addEventListener('click', toggleFavorite);
+  elements.audioToggle.addEventListener('click', toggleAudio);
 
   window.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') move(-1);
