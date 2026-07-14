@@ -88,6 +88,7 @@ const state = {
   order: decks[0].cards.map((_, index) => index),
   position: 0,
   flipped: false,
+  direction: 'it-en',
   favoriteIds: loadFavoriteIds(),
   touchStartX: 0,
   touchStartY: 0,
@@ -105,6 +106,7 @@ const elements = {
   previous: document.querySelector('#previous-button'),
   next: document.querySelector('#next-button'),
   flip: document.querySelector('#flip-button'),
+  direction: document.querySelector('#direction-button'),
   shuffle: document.querySelector('#shuffle-button'),
   reset: document.querySelector('#reset-button'),
   favorite: document.querySelector('#favorite-button')
@@ -219,6 +221,12 @@ function toggleFlip() {
   render();
 }
 
+function toggleDirection() {
+  state.direction = state.direction === 'it-en' ? 'en-it' : 'it-en';
+  state.flipped = false;
+  render();
+}
+
 function refreshDeckSelect() {
   const selectedDeckId = state.deckId;
 
@@ -281,16 +289,27 @@ function render() {
   const card = currentCard();
   const isEmpty = deck.cards.length === 0;
   const isFavorite = card ? state.favoriteIds.includes(card.id) : false;
+  const isItalianFirst = state.direction === 'it-en';
+  const frontLabel = isItalianFirst ? 'Italian' : 'English';
+  const backLabel = isItalianFirst ? 'English' : 'Italian';
+  const frontText = isItalianFirst ? card?.front : card?.back;
+  const backText = isItalianFirst ? card?.back : card?.front;
+  const frontNote = isItalianFirst ? card?.note : 'Tap to reveal the Italian.';
+  const backNote = isItalianFirst ? 'Tap to return to Italian.' : card?.note;
 
   refreshDeckSelect();
 
   elements.count.textContent = isEmpty ? '0 / 0' : `${state.position + 1} / ${deck.cards.length}`;
-  elements.frontText.textContent = isEmpty ? 'No favorites yet' : card.front;
+  document.querySelector('#front-label').textContent = frontLabel;
+  document.querySelector('#back-label').textContent = backLabel;
+  elements.frontText.textContent = isEmpty ? 'No favorites yet' : frontText;
   elements.frontText.classList.toggle('is-empty', isEmpty);
-  elements.frontNote.textContent = isEmpty ? 'Tap the star on any card to build this deck.' : card.note;
-  elements.backText.textContent = isEmpty ? 'Favorite cards will appear here' : card.back;
+  elements.frontNote.textContent = isEmpty ? 'Tap the star on any card to build this deck.' : frontNote;
+  elements.backText.textContent = isEmpty ? 'Favorite cards will appear here' : backText;
   elements.backText.classList.toggle('is-empty', isEmpty);
-  elements.backNote.textContent = isEmpty ? 'Choose another deck to keep studying.' : card.note;
+  elements.backNote.textContent = isEmpty ? 'Choose another deck to keep studying.' : backNote;
+  elements.direction.textContent = isItalianFirst ? 'Italian → English' : 'English → Italian';
+  elements.direction.setAttribute('aria-pressed', String(!isItalianFirst));
   elements.favorite.textContent = isFavorite ? '★' : '☆';
   elements.favorite.classList.toggle('is-favorite', isFavorite);
   elements.favorite.disabled = isEmpty;
@@ -302,8 +321,8 @@ function render() {
     isEmpty
       ? 'No favorite cards yet.'
       : state.flipped
-        ? `${card.back}. Tap to show Italian.`
-        : `${card.front}. Tap to show English.`
+        ? `${backText}. Tap to show ${frontLabel}.`
+        : `${frontText}. Tap to show ${backLabel}.`
   );
 }
 
@@ -322,6 +341,7 @@ function boot() {
   elements.card.addEventListener('touchstart', handleTouchStart, { passive: true });
   elements.card.addEventListener('touchend', handleTouchEnd, { passive: true });
   elements.flip.addEventListener('click', toggleFlip);
+  elements.direction.addEventListener('click', toggleDirection);
   elements.previous.addEventListener('click', () => move(-1));
   elements.next.addEventListener('click', () => move(1));
   elements.shuffle.addEventListener('click', shuffle);

@@ -71,7 +71,7 @@ h1 {
 .toolbar,
 .nav-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto;
   gap: 10px;
 }
 
@@ -101,6 +101,10 @@ button {
 button {
   padding: 0 16px;
   cursor: pointer;
+}
+
+#direction-button {
+  white-space: nowrap;
 }
 
 button:active {
@@ -250,10 +254,14 @@ select:focus-visible {
   }
 
   .toolbar {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .field {
+    grid-column: 1 / -1;
+  }
+
+  #direction-button {
     grid-column: 1 / -1;
   }
 
