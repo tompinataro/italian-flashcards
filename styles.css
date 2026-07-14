@@ -115,6 +115,7 @@ select:focus-visible {
 
 .study-area {
   display: grid;
+  position: relative;
   min-height: 420px;
 }
 
@@ -127,6 +128,32 @@ select:focus-visible {
   border-radius: 8px;
   background: transparent;
   perspective: 1200px;
+  touch-action: pan-y;
+}
+
+.favorite-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  border-color: rgb(23 32 29 / 0.22);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.9);
+  color: #765c17;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.favorite-button.is-favorite {
+  background: #fff4bd;
+  border-color: #d5a817;
+  color: #7a5700;
 }
 
 .card-face {
@@ -186,6 +213,11 @@ select:focus-visible {
   line-height: 0.98;
   letter-spacing: 0;
   word-break: break-word;
+}
+
+.card-face strong.is-empty {
+  font-size: clamp(1.7rem, 7vw, 3rem);
+  line-height: 1.12;
 }
 
 .card-note {

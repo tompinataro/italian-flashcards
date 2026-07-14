@@ -80,11 +80,18 @@ const decks = [
   }
 ];
 
+const FAVORITES_DECK_ID = 'favorites';
+const FAVORITES_STORAGE_KEY = 'italian-flashcards-favorites-v1';
+
 const state = {
   deckId: decks[0].id,
   order: decks[0].cards.map((_, index) => index),
   position: 0,
-  flipped: false
+  flipped: false,
+  favoriteIds: loadFavoriteIds(),
+  touchStartX: 0,
+  touchStartY: 0,
+  suppressNextClick: false
 };
 
 const elements = {
@@ -99,20 +106,85 @@ const elements = {
   next: document.querySelector('#next-button'),
   flip: document.querySelector('#flip-button'),
   shuffle: document.querySelector('#shuffle-button'),
-  reset: document.querySelector('#reset-button')
+  reset: document.querySelector('#reset-button'),
+  favorite: document.querySelector('#favorite-button')
 };
 
+function cardId(deckId, index) {
+  return `${deckId}:${index}`;
+}
+
+function withCardMeta(deck, card, index) {
+  return {
+    ...card,
+    sourceDeckId: deck.id,
+    sourceDeckName: deck.name,
+    sourceIndex: index,
+    id: cardId(deck.id, index)
+  };
+}
+
+function loadFavoriteIds() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY));
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavoriteIds() {
+  try {
+    localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.favoriteIds));
+  } catch {
+    // Favorites still work for this session if persistent storage is unavailable.
+  }
+}
+
+function favoriteCards() {
+  const cardsById = new Map();
+
+  decks.forEach((deck) => {
+    deck.cards.forEach((card, index) => {
+      cardsById.set(cardId(deck.id, index), withCardMeta(deck, card, index));
+    });
+  });
+
+  return state.favoriteIds.map((id) => cardsById.get(id)).filter(Boolean);
+}
+
+function deckOptions() {
+  return [
+    {
+      id: FAVORITES_DECK_ID,
+      name: `Favorites (${favoriteCards().length})`,
+      cards: favoriteCards()
+    },
+    ...decks
+  ];
+}
+
 function currentDeck() {
+  if (state.deckId === FAVORITES_DECK_ID) {
+    return {
+      id: FAVORITES_DECK_ID,
+      name: 'Favorites',
+      cards: favoriteCards()
+    };
+  }
+
   return decks.find((deck) => deck.id === state.deckId) ?? decks[0];
 }
 
 function currentCard() {
   const deck = currentDeck();
-  return deck.cards[state.order[state.position]];
+  const card = deck.cards[state.order[state.position]];
+  if (!card) return null;
+  return card.id ? card : withCardMeta(deck, card, state.order[state.position]);
 }
 
 function setDeck(deckId) {
-  const deck = decks.find((candidate) => candidate.id === deckId) ?? decks[0];
+  const deck = deckOptions().find((candidate) => candidate.id === deckId) ?? decks[0];
   state.deckId = deck.id;
   state.order = deck.cards.map((_, index) => index);
   state.position = 0;
@@ -122,12 +194,15 @@ function setDeck(deckId) {
 
 function move(offset) {
   const deck = currentDeck();
+  if (deck.cards.length === 0) return;
   state.position = (state.position + offset + deck.cards.length) % deck.cards.length;
   state.flipped = false;
   render();
 }
 
 function shuffle() {
+  if (state.order.length === 0) return;
+
   for (let index = state.order.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(Math.random() * (index + 1));
     [state.order[index], state.order[swapIndex]] = [state.order[swapIndex], state.order[index]];
@@ -138,25 +213,17 @@ function shuffle() {
 }
 
 function toggleFlip() {
+  if (currentDeck().cards.length === 0) return;
+
   state.flipped = !state.flipped;
   render();
 }
 
-function render() {
-  const deck = currentDeck();
-  const card = currentCard();
-  elements.count.textContent = `${state.position + 1} / ${deck.cards.length}`;
-  elements.frontText.textContent = card.front;
-  elements.frontNote.textContent = card.note ?? 'Tap the card to reveal the answer.';
-  elements.backText.textContent = card.back;
-  elements.backNote.textContent = card.note ?? deck.name;
-  elements.card.classList.toggle('is-flipped', state.flipped);
-  elements.card.setAttribute('aria-label', state.flipped ? `${card.back}. Tap to show Italian.` : `${card.front}. Tap to show English.`);
-}
+function refreshDeckSelect() {
+  const selectedDeckId = state.deckId;
 
-function boot() {
   elements.deckSelect.replaceChildren(
-    ...decks.map((deck) => {
+    ...deckOptions().map((deck) => {
       const option = document.createElement('option');
       option.value = deck.id;
       option.textContent = deck.name;
@@ -164,13 +231,102 @@ function boot() {
     })
   );
 
+  elements.deckSelect.value = selectedDeckId;
+}
+
+function syncFavoritesDeckPosition() {
+  const deck = currentDeck();
+
+  if (state.deckId === FAVORITES_DECK_ID) {
+    state.order = deck.cards.map((_, index) => index);
+    state.position = Math.min(state.position, Math.max(deck.cards.length - 1, 0));
+    state.flipped = false;
+  }
+}
+
+function toggleFavorite() {
+  const card = currentCard();
+  if (!card) return;
+
+  const isFavorite = state.favoriteIds.includes(card.id);
+  state.favoriteIds = isFavorite
+    ? state.favoriteIds.filter((id) => id !== card.id)
+    : [...state.favoriteIds, card.id];
+
+  saveFavoriteIds();
+  syncFavoritesDeckPosition();
+  render();
+}
+
+function handleTouchStart(event) {
+  const touch = event.changedTouches[0];
+  state.touchStartX = touch.clientX;
+  state.touchStartY = touch.clientY;
+  state.suppressNextClick = false;
+}
+
+function handleTouchEnd(event) {
+  const touch = event.changedTouches[0];
+  const deltaX = touch.clientX - state.touchStartX;
+  const deltaY = touch.clientY - state.touchStartY;
+
+  if (Math.abs(deltaX) < 55 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+
+  state.suppressNextClick = true;
+  move(deltaX < 0 ? 1 : -1);
+}
+
+function render() {
+  const deck = currentDeck();
+  const card = currentCard();
+  const isEmpty = deck.cards.length === 0;
+  const isFavorite = card ? state.favoriteIds.includes(card.id) : false;
+
+  refreshDeckSelect();
+
+  elements.count.textContent = isEmpty ? '0 / 0' : `${state.position + 1} / ${deck.cards.length}`;
+  elements.frontText.textContent = isEmpty ? 'No favorites yet' : card.front;
+  elements.frontText.classList.toggle('is-empty', isEmpty);
+  elements.frontNote.textContent = isEmpty ? 'Tap the star on any card to build this deck.' : card.note;
+  elements.backText.textContent = isEmpty ? 'Favorite cards will appear here' : card.back;
+  elements.backText.classList.toggle('is-empty', isEmpty);
+  elements.backNote.textContent = isEmpty ? 'Choose another deck to keep studying.' : card.note;
+  elements.favorite.textContent = isFavorite ? '★' : '☆';
+  elements.favorite.classList.toggle('is-favorite', isFavorite);
+  elements.favorite.disabled = isEmpty;
+  elements.favorite.setAttribute('aria-pressed', String(isFavorite));
+  elements.favorite.setAttribute('aria-label', isFavorite ? 'Remove current card from favorites' : 'Add current card to favorites');
+  elements.card.classList.toggle('is-flipped', state.flipped);
+  elements.card.setAttribute(
+    'aria-label',
+    isEmpty
+      ? 'No favorite cards yet.'
+      : state.flipped
+        ? `${card.back}. Tap to show Italian.`
+        : `${card.front}. Tap to show English.`
+  );
+}
+
+function boot() {
+  refreshDeckSelect();
+
   elements.deckSelect.addEventListener('change', (event) => setDeck(event.target.value));
-  elements.card.addEventListener('click', toggleFlip);
+  elements.card.addEventListener('click', () => {
+    if (state.suppressNextClick) {
+      state.suppressNextClick = false;
+      return;
+    }
+
+    toggleFlip();
+  });
+  elements.card.addEventListener('touchstart', handleTouchStart, { passive: true });
+  elements.card.addEventListener('touchend', handleTouchEnd, { passive: true });
   elements.flip.addEventListener('click', toggleFlip);
   elements.previous.addEventListener('click', () => move(-1));
   elements.next.addEventListener('click', () => move(1));
   elements.shuffle.addEventListener('click', shuffle);
   elements.reset.addEventListener('click', () => setDeck(state.deckId));
+  elements.favorite.addEventListener('click', toggleFavorite);
 
   window.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') move(-1);
