@@ -61,6 +61,22 @@ const decks = [
       { front: 'bere', back: 'to drink' },
       { front: 'pagare', back: 'to pay' }
     ]
+  },
+  {
+    id: 'conversation',
+    name: 'Conversation Phrases',
+    cards: [
+      { front: 'riprendiamo il filo', back: "let's pick up the thread again", note: 'ree-prehn-DYAH-moh eel FEE-loh' },
+      { front: 'posso dare un\'occhiata', back: 'I can take a look', note: 'POHS-soh DAH-reh oon ohk-KYAH-tah' },
+      { front: 'ora è più chiaro', back: "now it's clearer", note: 'OH-rah eh pyoo KYAH-roh' },
+      { front: 'non è automatico', back: "it isn't automatic", note: 'nohn eh ow-toh-MAH-tee-koh' },
+      { front: 'meglio leggero che pesante', back: 'better light than heavy', note: 'MEH-lyoh lehd-JEH-roh keh peh-ZAHN-teh' },
+      { front: 'punto di riferimento', back: 'point of reference', note: 'POON-toh dee ree-feh-ree-MEN-toh' },
+      { front: 'è scritto nero su bianco', back: "it's written in black and white", note: 'eh SKREET-toh NEH-roh soo BYAHN-koh' },
+      { front: 'eccolo qui', back: 'here it is', note: 'EHK-koh-loh kwee' },
+      { front: 'tutto qui', back: "that's all", note: 'TOOT-toh kwee' },
+      { front: 'facciamo ordine', back: "let's get things organized", note: 'fah-CHAH-moh OR-dee-neh' }
+    ]
   }
 ];
 
