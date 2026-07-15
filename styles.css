@@ -126,8 +126,6 @@ h1 {
   overflow: hidden;
   border: 1px solid rgb(23 32 29 / 0.2);
   color: #ffffff;
-  font-size: 0.86rem;
-  text-shadow: 0 1px 5px rgb(0 0 0 / 0.5);
   isolation: isolate;
 }
 
@@ -155,6 +153,31 @@ h1 {
   box-shadow: 0 0 0 2px rgb(23 32 29 / 0.22);
 }
 
+.language-symbol {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(70%, 92px);
+  height: 68%;
+  color: #ffffff;
+  font-size: clamp(1.45rem, 7vw, 2.55rem);
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.42);
+}
+
+.flag-morocco .language-symbol {
+  color: #0f6f4f;
+  font-size: clamp(2rem, 9vw, 3.45rem);
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.34),
+    0 2px 8px rgb(0 0 0 / 0.28);
+}
+
+.flag-greece .language-symbol {
+  font-weight: 900;
+}
+
 .flag-italy::before {
   background: linear-gradient(90deg, #1f6f5b 0 33.3%, #f7f4ed 33.3% 66.6%, #b33a32 66.6%);
 }
@@ -178,11 +201,7 @@ h1 {
 }
 
 .flag-morocco::before {
-  background:
-    radial-gradient(circle at center, transparent 0 13px, #0f6f4f 14px 16px, transparent 17px),
-    linear-gradient(36deg, transparent 44%, #0f6f4f 45% 48%, transparent 49%),
-    linear-gradient(108deg, transparent 44%, #0f6f4f 45% 48%, transparent 49%),
-    linear-gradient(180deg, #c1272d, #c1272d);
+  background: #c1272d;
 }
 
 .toolbar,
@@ -382,7 +401,14 @@ select:focus-visible {
   .language-option {
     min-height: 40px;
     padding: 0 6px;
-    font-size: 0.76rem;
+  }
+
+  .language-symbol {
+    font-size: 1.45rem;
+  }
+
+  .flag-morocco .language-symbol {
+    font-size: 2.1rem;
   }
 
   .field {
