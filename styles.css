@@ -342,6 +342,12 @@ select:focus-visible {
   line-height: 1.35;
 }
 
+html[data-language="moroccan"] .card-note {
+  font-size: clamp(1.45rem, 5vw, 2.15rem);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
 .card-back .card-note {
   color: #c7ddd5;
 }
