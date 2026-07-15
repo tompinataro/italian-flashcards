@@ -176,7 +176,11 @@ h1 {
 }
 
 .flag-morocco::before {
-  background: #c1272d;
+  background:
+    radial-gradient(circle at center, transparent 0 13px, #0f6f4f 14px 16px, transparent 17px),
+    linear-gradient(36deg, transparent 44%, #0f6f4f 45% 48%, transparent 49%),
+    linear-gradient(108deg, transparent 44%, #0f6f4f 45% 48%, transparent 49%),
+    linear-gradient(180deg, #c1272d, #c1272d);
 }
 
 .toolbar,
