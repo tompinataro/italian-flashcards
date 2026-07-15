@@ -459,7 +459,6 @@ const languages = [
     name: 'Greek',
     country: 'Greece',
     flagClass: 'flag-greece',
-    scriptMark: 'ΑΒΓ',
     frontLabel: 'Greek',
     directionForward: 'Greek -> English',
     directionReverse: 'English -> Greek',
@@ -573,7 +572,6 @@ const languages = [
     name: 'Moroccan Arabic',
     country: 'Morocco',
     flagClass: 'flag-morocco',
-    scriptMark: 'ع',
     frontLabel: 'Moroccan Arabic',
     directionForward: 'Moroccan -> English',
     directionReverse: 'English -> Moroccan',
@@ -863,15 +861,6 @@ function refreshLanguageSwitch() {
       button.setAttribute('aria-label', `Study ${language.name} phrase cards`);
       button.setAttribute('aria-pressed', String(language.id === state.languageId));
       button.classList.toggle('is-active', language.id === state.languageId);
-
-      if (language.scriptMark) {
-        const symbol = document.createElement('span');
-        symbol.className = 'language-symbol';
-        symbol.textContent = language.scriptMark;
-        symbol.setAttribute('aria-hidden', 'true');
-        button.replaceChildren(symbol);
-      }
-
       return button;
     })
   );
