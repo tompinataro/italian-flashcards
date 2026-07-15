@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#1f6f5b" />
+    <meta name="theme-color" content="#b72d2a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Italian Cards" />
+    <meta name="apple-mobile-web-app-title" content="Polyglot Cards" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <title>Italian Flashcards</title>
+    <title>Polyglot Flash Cards</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./icons/icon.svg" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
@@ -17,13 +17,17 @@
     <main class="app-shell">
       <header class="topbar">
         <div>
-          <p class="kicker">Italian practice deck</p>
-          <h1>Flashcards</h1>
+          <p class="kicker">Phrase cards</p>
+          <h1>Polyglot</h1>
         </div>
         <div class="progress" aria-live="polite">
           <span id="card-count">1 / 1</span>
         </div>
       </header>
+
+      <section class="language-panel" aria-label="Language selector">
+        <div id="language-switch" class="language-switch" role="group" aria-label="Choose language"></div>
+      </section>
 
       <section class="toolbar" aria-label="Deck controls">
         <label class="field">

@@ -1,12 +1,12 @@
 {
-  "name": "Italian Flashcards",
-  "short_name": "Italian Cards",
-  "description": "Offline Italian flashcards for phone study.",
+  "name": "Polyglot Flash Cards",
+  "short_name": "Polyglot Cards",
+  "description": "Offline phrase flash cards for Italian, French, Spanish, German, Greek, and Moroccan Arabic.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7f4ed",
-  "theme_color": "#1f6f5b",
+  "theme_color": "#b72d2a",
   "icons": [
     {
       "src": "./icons/icon.svg",

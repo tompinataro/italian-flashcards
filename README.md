@@ -1,6 +1,6 @@
-# Italian Flashcards
+# Polyglot Flash Cards
 
-A small static Progressive Web App for Italian flashcards. It runs without a build step and can be installed to a phone from a hosted URL.
+A small static Progressive Web App for phrase flash cards. The parent app now switches between Italian, French, Spanish, German, Greek, and Moroccan Arabic while keeping the same deck structure and offline install path.
 
 ## Run Locally
 
@@ -31,10 +31,10 @@ After the first load, the service worker caches the app for offline study.
 
 ## Edit The Cards
 
-Cards live in `app.js` inside the `decks` array. Each card uses:
+Cards live in `app.js` inside the `languages` array. Each language contains matching decks, and each card uses:
 
 ```js
 { front: 'ciao', back: 'hello / goodbye', note: 'Informal greeting.' }
 ```
 
-Replace or expand the starter deck with the final Italian curriculum.
+Add new languages by copying one language object, changing the metadata, and translating each deck's cards.
