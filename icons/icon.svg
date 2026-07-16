@@ -8,5 +8,4 @@
   <path d="M426 0h86v512H426z" fill="#c1272d"/>
   <rect x="102" y="122" width="308" height="268" rx="34" fill="#fff" stroke="#17382f" stroke-width="18"/>
   <path d="M162 193h188M162 256h188M162 319h132" stroke="#17382f" stroke-width="28" stroke-linecap="round"/>
-  <path d="M256 176l18 55h58l-47 34 18 55-47-34-47 34 18-55-47-34h58z" fill="none" stroke="#0f6f4f" stroke-width="13" stroke-linejoin="round"/>
 </svg>

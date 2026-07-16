@@ -1,4 +1,4 @@
-const CACHE_NAME = 'polyglot-flashcards-v7';
+const CACHE_NAME = 'polyglot-flashcards-v8';
 const ASSETS = [
   './',
   './index.html',
