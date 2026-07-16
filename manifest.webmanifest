@@ -1,6 +1,6 @@
 {
-  "name": "Polyglot Flash Cards",
-  "short_name": "Polyglot Cards",
+  "name": "Phrase Passport",
+  "short_name": "Phrase Passport",
   "description": "Offline phrase flash cards for Italian, French, Spanish, German, Greek, and Moroccan Arabic.",
   "start_url": "./index.html",
   "scope": "./",

@@ -937,7 +937,7 @@ function render() {
   const backNote = state.targetFirst ? language.revealForward : card?.note;
 
   document.documentElement.dataset.language = language.id;
-  document.title = `Polyglot Flash Cards - ${language.name}`;
+  document.title = `Phrase Passport - ${language.name}`;
   refreshLanguageSwitch();
   refreshDeckSelect();
 

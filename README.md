@@ -1,4 +1,4 @@
-# Polyglot Flash Cards
+# Phrase Passport
 
 A small static Progressive Web App for phrase flash cards. The parent app now switches between Italian, French, Spanish, German, Greek, and Moroccan Arabic while keeping the same deck structure and offline install path.
 
